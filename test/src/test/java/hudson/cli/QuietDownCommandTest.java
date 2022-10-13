@@ -39,14 +39,11 @@ import hudson.model.FreeStyleProject;
 import hudson.model.Queue;
 import hudson.model.QueueTest;
 import hudson.util.OneShotEvent;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.FutureTask;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Supplier;
+
 import jenkins.model.Jenkins;
 import org.junit.Before;
 import org.junit.Rule;
@@ -220,20 +217,27 @@ public class QuietDownCommandTest {
         assertThat(((FreeStyleProject) j.jenkins.getItem("aProject")).getBuilds(), hasSize(1));
 
         boolean timeoutOccurred = false;
-        final FutureTask exec_task = new FutureTask(new Callable() {
-            @Override
-            public Object call() {
-                assertJenkinsNotInQuietMode();
-                beforeCli.signal();
-                final CLICommandInvoker.Result result = command
-                        .authorizedTo(Jenkins.READ, Jenkins.ADMINISTER)
-                        .invokeWithArgs("-block");
-                fail("Should never return from previous CLI call!");
-                return null;
-            }
-        });
+
+        CompletableFuture exec_task = null;
         try {
-            threadPool.submit(exec_task);
+            exec_task = CompletableFuture.supplyAsync(new Supplier<Object>() {
+
+                @Override
+                public Object get() {
+                    return new Callable() {
+                        @Override
+                        public Object call() {
+                            assertJenkinsNotInQuietMode();
+                            beforeCli.signal();
+                            final CLICommandInvoker.Result result = command
+                                    .authorizedTo(Jenkins.READ, Jenkins.ADMINISTER)
+                                    .invokeWithArgs("-block");
+                            fail("Should never return from previous CLI call!");
+                            return null;
+                        }
+                    }.call();
+                }
+            }, threadPool);
             beforeCli.block();
             assertJenkinsInQuietMode();
             exec_task.get(10, TimeUnit.SECONDS);
