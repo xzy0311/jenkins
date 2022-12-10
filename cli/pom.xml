@@ -161,7 +161,8 @@
       </plugin>
       <plugin>
         <groupId>org.jvnet.localizer</groupId>
-        <artifactId>localizer-maven-plugin</artifactId>
+        <artifactId>localizer</artifactId>
+        <version>1.31</version>
         <!-- version specified in grandparent pom -->
         <executions>
           <execution>
@@ -205,6 +206,8 @@
           <plugin>
             <groupId>org.jacoco</groupId>
             <artifactId>jacoco-maven-plugin</artifactId>
+            <version>0.8.7</version>
+
             <!-- Version specified in parent POM -->
             <executions>
               <execution>

@@ -434,7 +434,9 @@ THE SOFTWARE.
         </configuration>
       </plugin>
       <plugin>
-        <artifactId>maven-remote-resources-plugin</artifactId>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-remote-resources-plugin</artifactId>
+          <version>1.7.0</version>
         <!-- Version specified in parent POM -->
         <executions>
           <execution>
@@ -453,6 +455,7 @@ THE SOFTWARE.
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
+        <version>3.0.0</version>
         <!-- Version specified in parent POM -->
         <executions>
           <execution>
@@ -497,6 +500,7 @@ THE SOFTWARE.
           <plugin>
             <groupId>com.github.spotbugs</groupId>
             <artifactId>spotbugs-maven-plugin</artifactId>
+            <version>4.6.0.0</version>
             <!-- Version specified in parent POM -->
             <configuration>
               <threshold>High</threshold>
@@ -521,7 +525,9 @@ THE SOFTWARE.
       <build>
         <plugins>
           <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-gpg-plugin</artifactId>
+            <version>3.0.1</version>
             <!-- Version specified in parent POM -->
             <executions>
               <execution>
@@ -558,7 +564,7 @@ THE SOFTWARE.
           <plugin>
             <groupId>org.maven.ide.eclipse</groupId>
             <artifactId>lifecycle-mapping</artifactId>
-            <version>0.12.0</version>
+            <version>1.0.0</version>
             <configuration>
               <mappingId>customizable</mappingId>
               <configurators>

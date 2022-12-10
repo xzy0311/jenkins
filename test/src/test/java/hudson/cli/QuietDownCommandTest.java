@@ -281,17 +281,14 @@ public class QuietDownCommandTest {
         assertThat(((FreeStyleProject) j.jenkins.getItem("aProject")).getBuilds(), hasSize(1));
 
         boolean timeoutOccurred = false;
-        final FutureTask exec_task = new FutureTask(new Callable() {
-            @Override
-            public Object call() {
-                assertJenkinsNotInQuietMode();
-                beforeCli.signal();
-                final CLICommandInvoker.Result result = command
-                        .authorizedTo(Jenkins.READ, Jenkins.ADMINISTER)
-                        .invokeWithArgs("-block", "-timeout", "0");
-                fail("Should never return from previous CLI call!");
-                return null;
-            }
+        final FutureTask exec_task = new FutureTask(()->{
+            assertJenkinsNotInQuietMode();
+            beforeCli.signal();
+            final CLICommandInvoker.Result result = command
+                    .authorizedTo(Jenkins.READ, Jenkins.ADMINISTER)
+                    .invokeWithArgs("-block", "-timeout", "0");
+            fail("Should never return from previous CLI call!");
+            return null;
         });
         try {
             threadPool.submit(exec_task);
